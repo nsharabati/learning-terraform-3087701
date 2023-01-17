@@ -48,7 +48,15 @@ resource "aws_instance" "blogs" {
   }
 }
 
+
+
+
+# resource "aws_security_group" "blog"{
+#  name        = "blog"
+#  description = "Allow http and https in. Allow everything out"
+
 module "blog_sg" {
+
   
  source  = "terraform-aws-modules/security-group/aws" 
  version = "4.13.0"
