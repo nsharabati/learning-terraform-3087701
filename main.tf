@@ -38,7 +38,7 @@ module "vpc" {
 
 resource "aws_instance" "blogs" {
   ami           = data.aws_ami.app_ami.id
-  instance_type = var.instance_type
+ # instance_type = var.instance_type
   instance_type = "t3.nano"
   
   vpc_security_group_ids = [module.blog_sg.security_group_id]
