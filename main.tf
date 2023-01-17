@@ -60,7 +60,7 @@ module "autoscaling" {
   target_group_arns      = module.blog_alb.target_group_arns
   security_groups        = [module.blog_sg.security_group_id]
 
-  image_id           = data.aws_ami.app_ami.id
+  image_id             = data.aws_ami.app_ami.id
   instance_type        = var.instance_type
 }
 
@@ -91,7 +91,7 @@ module "blog_alb" {
       target_type      = "instance"
       targets = {
         my_target = {
-          target_id = aws_instance.blogs.id
+          target_id = module.autoscaling.autoscaling_group_id
           port = 80
         }
       }
