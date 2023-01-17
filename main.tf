@@ -89,12 +89,7 @@ module "blog_alb" {
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
-      targets = {
-        my_target = {
-          target_id = module.autoscaling.autoscaling_group_id
-          port = 80
-        }
-      }
+    
     }
   ]
 
