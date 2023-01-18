@@ -21,14 +21,14 @@ module "vpc" {
   cidr = "${var.environment.network_prefix}.0.0/16"
 
   azs             = ["us-west-1a", "us-west-1b", "us-west-1c"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  public_subnets  = ["${var.environment.network_prefix}.101.0/24", "${var.environment.network_prefix}.102.0/24", "${var.environment.network_prefix}.103.0/24"]
 
   enable_nat_gateway = true
 
 
   tags = {
     Terraform = "true"
-    Environment = "dev"
+    Environment = var.environment.name
   }
 }
 
@@ -36,9 +36,9 @@ module "autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
   version = "6.7.0"
 
-  name     = "blogs"
-  min_size = var.min_size
-  max_size = var.max.size
+  name     = "${var.environment.name}-blogs"
+  min_size = var.asg_min_size
+  max_size = var.asg_max.size
 
   vpc_zone_identifier    = module.vpc.public_subnets
   target_group_arns      = module.blog_alb.target_group_arns
@@ -53,7 +53,7 @@ module "blog_alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 8.0"
 
-  name = "blog-alb"
+  name = "${var.environment.name}-blog-alb"
 
   load_balancer_type = "application"
 
@@ -64,7 +64,7 @@ module "blog_alb" {
 
   target_groups = [
     {
-      name_prefix      = "blog-"
+      name_prefix      = "var.environment.name-"
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
@@ -92,7 +92,7 @@ module "blog_sg" {
   
  source  = "terraform-aws-modules/security-group/aws" 
  version = "4.17.1"
- name    = "blog"
+ name    = "${var.environment.name}-blog"
   
  vpc_id  = module.vpc.public_subnets[0]
   
